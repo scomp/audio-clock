@@ -17,6 +17,9 @@ let (mut updater, consumer) = audio_clock(tempo, sample_rate);
 // from the real-time audio thread
 updater.increment(frame_count);
 
+// set the clock to a given frame
+updater.set(frame_count);
+
 
 // Somewhere else, use the clock:
 println!("frame processed: ", consumer.raw_frames(), 128);

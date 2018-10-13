@@ -9,6 +9,9 @@ impl ClockUpdater {
     pub fn increment(&mut self, frames: usize) {
         self.clock.store(self.clock.load(Ordering::Relaxed) + frames, Ordering::Release);
     }
+    pub fn set(&mut self, frame: usize) {
+        self.clock.store(frame, Ordering::Release);
+    }
 }
 
 pub struct ClockConsumer {
@@ -65,5 +68,9 @@ mod tests {
         assert_eq!(consumer.raw_frames(), second_consumer.raw_frames());
         assert_eq!(consumer.beat_duration(), second_consumer.beat_duration());
         assert_eq!(consumer.beat(), second_consumer.beat());
+        updater.set(128);
+        assert_eq!(consumer.raw_frames(), 128);
+        assert_eq!(consumer.beat_duration(), 132.0 / 60.);
+        assert_eq!(consumer.beat(), consumer.beat_duration() * (consumer.raw_frames() as f32 / 44100. ));
     }
 }
